@@ -23,7 +23,6 @@ def report_pdf():
 def report_docx():
 	pass
 
-
 #functions for the events in the file menu
 
 def command_file():
@@ -55,13 +54,16 @@ def command_edit2():
 def command_edit3():
 	pass
 
-root_filename = ""
-def initial_button_function():
-	root.filename = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.png"),("pdf file", "*.pdf"),("docx file", "*.docx")))
-	root_filename = root.filename
-	Label12 = Label(root, text="You have selected" + root_filename)
-	Label12.pack()
-	return NONE
+
+def initial_button_function2():
+	root_filename1 = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("pdf file", "*.pdf"),("docx file", "*.docx"))) 
+	Label22.configure(text="File Selected: "+root_filename1)
+
+ 
+
+def initial_button_function1():
+	root_filename = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("pdf file", "*.pdf"),("docx file", "*.docx")))
+	Label11.configure(text="File Selected: "+root_filename)
 
 		
 #detection of the extension name of the file
@@ -75,24 +77,34 @@ def extention_detection():
 		report_pdf()
 	elif ext == "docx":
 		report_docx()
-
 	pass
 
-#Label for the first entry
+#Label for the first entry,
 
-Beginning = Label(root, text="Select file")
-Beginning.pack()
-
+Beginning = Label(root, text="Select file first")
+Beginning.grid(row=1, column=3)
 
 #creating a button for browse
 
-button_on_initial = Button(root, text="Browse" , command=initial_button_function)
-button_on_initial.pack()
+button_on_initial = Button(root, text="Browse" , command=initial_button_function1)
+button_on_initial.grid(row=2 , column=2, padx=15)
 
+Label11 = Label(root, text="No file selected")
+Label11.grid(row=2, column=4)
+
+Beginning = Label(root, text="Select second file")
+Beginning.grid(row=3, column=3)
+
+button_on_initial1 = Button(root, text="Browse", command=initial_button_function2)
+button_on_initial1.grid(row=4, column=2, padx=15)
+
+
+Label22 = Label(root, text="No file selected")
+Label22.grid(row=4 , column=4)
 
 
 button_on_audit = Button(root, text="Audit", command=extention_detection)
-button_on_audit.pack()
+button_on_audit.grid(row=5, column=3)
 
 #creating a menu
 
@@ -121,6 +133,7 @@ edit_menu.add_command(labe="def14", command=command_edit3)
 
 
 root.mainloop()
+
 
 
 
