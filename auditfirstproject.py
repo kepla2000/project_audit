@@ -1,22 +1,58 @@
 from tkinter import *
 from tkinter import filedialog
+from tkinter import messagebox
 import os
-import openpyxl
+import sqlite3
+import pandas as pd
+from sqlalchemy import create_engine
+
 
 #Main Window Creation
 
 root = Tk()
 root.title("Audit X")
 root.geometry("400x400")
+
 #function for analysis and report of an xlsx file
 
 def report_xlsx():
-	pass
+	#transferring data from summarized results to database(semester 1 first file)
+	df = pd.read_excel(root_filename ,sheet_name = 0 ,header=10, usecols='C:T', skiprows = 0)
+	engine = create_engine('sqlite:///semester1_simple_com.sqlite')
+	df.to_sql('semester1simple', con = engine, if_exists = 'replace', index = FALSE)
+
+	#transferring data from complex results to database(semester 1 first file)
+	df1 = pd.read_excel(root_filename , sheet_name = 1, usecols = 'C:AA', header = 13)
+	df1.to_sql('semester1com1', con = engine, if_exists ='replace', index = FALSE)
+
+	#transferring data from simple file to database (semester 2 first file)
+	df2 = pd.read_excel(root_filename1 , sheet_name = 0, usecols = 'C:T', skiprows = 0, header = 10)
+	df2.to_sql('semester2simple', con = engine, if_exists = 'replace', index = FALSE)
+
+
+	#transferring data to a sql database complex file(semester 2 second file)  
+	df3 = pd.read_excel(root_filename1, sheet_name = 1, usecols = 'C:AA', header = 13)
+	df3.to_sql('semester2com1', con = engine, if_exists = 'replace', index = FALSE)
+
+	#connecting program to database for value manipulation
+
+	connection = sqlite3.connect('semester1_simple_com.sqlite')
+	c = connection.cursor()
+
+	#Error correction
+
+
+
+
+
 
 #function for analysis and report of a pdf file
 
 def report_pdf():
+	#converting pdf file to an xlsx file 
+
 	pass
+
 
 #function for analysis and report of a docx file
 
@@ -55,29 +91,33 @@ def command_edit3():
 	pass
 
 
-def initial_button_function2():
-	root_filename1 = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("pdf file", "*.pdf"),("docx file", "*.docx"))) 
+def initial_button_function1():
+	global root_filename1
+	root_filename1 = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("pdf file", "*.pdf"),("docx file", "*.docx"),)) 
 	Label22.configure(text="File Selected: "+root_filename1)
+	
 
  
 
-def initial_button_function1():
-	root_filename = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("pdf file", "*.pdf"),("docx file", "*.docx")))
+def initial_button_function():
+	global root_filename
+	root_filename = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("pdf file", "*.pdf"),("docx file", "*.docx"),))
 	Label11.configure(text="File Selected: "+root_filename)
+	
 
 		
 #detection of the extension name of the file
 
 def extention_detection():
-	modified_filename = f'r"{root_filename}"'
-	ext = root_filename.split(".")[1]
-	if ext == "xlsx":
+	ext = root_filename.split(".")[-1]
+	ext1 = root_filename1.split(".")[-1]
+	if ext and ext1 == "xlsx":
 		report_xlsx()
-	elif ext == "pdf":
-		report_pdf()
-	elif ext == "docx":
+	elif ext and ext1 == "docx":
 		report_docx()
-	pass
+	elif ext and ext1 == "pdf":
+		report_pdf()	
+
 
 #Label for the first entry,
 
@@ -86,7 +126,7 @@ Beginning.grid(row=1, column=3)
 
 #creating a button for browse
 
-button_on_initial = Button(root, text="Browse" , command=initial_button_function1)
+button_on_initial = Button(root, text="Browse" , command=initial_button_function)
 button_on_initial.grid(row=2 , column=2, padx=15)
 
 Label11 = Label(root, text="No file selected")
@@ -95,7 +135,7 @@ Label11.grid(row=2, column=4)
 Beginning = Label(root, text="Select second file")
 Beginning.grid(row=3, column=3)
 
-button_on_initial1 = Button(root, text="Browse", command=initial_button_function2)
+button_on_initial1 = Button(root, text="Browse", command=initial_button_function1)
 button_on_initial1.grid(row=4, column=2, padx=15)
 
 
