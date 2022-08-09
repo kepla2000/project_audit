@@ -10,6 +10,8 @@ from PyPDF2 import PdfFileReader
 import shutil
 from tkinter import ttk
 from docx2pdf import convert
+from openpyxl import Workbook, load_workbook
+from openpyxl.utils import get_column_letter
 
 
 
@@ -26,45 +28,100 @@ root.geometry("800x300")
 #function for analysis and report of an xlsx file
 
 def report_xlsx():
+	#calculating the number of courses taken by the students in that particular year
+
+	#creating a new database for the results
+	conn = sqlite3.connect("revisied_database1")
+	conn1 = sqlite3.connect("revisied_database2")
+	c = conn.cursor()
+	c1 = conn1.cursor()
+
+	c1.execute("""CREATE TABLE COMPLEX_CURRENT (
+		Sn INT,
+		StudentName TEXT,
+		StudentID INT,
+		IndexNo INT,
+		CredReg INT,
+		CredObt INT,
+		CredCalc INT,
+
+
+
+		)
+		CREATE TABLE SIMPLE_CURRENT
+		
+
+
+
+
+
+
+		""")
+
+
+
+
+
+	#finding the number of columns of the file
+	connection = sqlite3.connect("revisied_database.sqlite3")
+	c = connection.cursor()
+
 	#transferring data from summarized results to database(semester 1 first file)
-	df = pd.read_excel(root_filename ,sheet_name = 0 ,header=10, usecols='C:T', skiprows = 0)
-	engine = create_engine('sqlite:///db.sqlite')
-	df.to_sql('db', con = engine, if_exists = 'replace', index = FALSE)
+	#creating a database for the files
+	engine = create_engine('sqlite:///db1.sqlite')
+	df = pd.read_excel(root_filename,sheet_name = 0 ,header=10, usecols='C:T', skiprows = 0)
+	df.to_sql('simple_current', con = engine, if_exists = 'replace', index = FALSE)
 
 	#transferring data from complex results to database(semester 1 first file)
 	df1 = pd.read_excel(root_filename , sheet_name = 1, usecols = 'C:AA', header = 13)
-	df1.to_sql('semester1com1', con = engine, if_exists ='replace', index = FALSE)
+	df1.to_sql('complex_current', con = engine, if_exists ='replace', index = FALSE)
 
 	#transferring data from simple file to database (semester 2 first file)
 	df2 = pd.read_excel(root_filename1 , sheet_name = 0, usecols = 'C:T', skiprows = 0, header = 10)
-	df2.to_sql('semester2simple', con = engine, if_exists = 'replace', index = FALSE)
-
+	df2.to_sql('simple_previous', con = engine, if_exists = 'replace', index = FALSE)
 
 	#transferring data to a sql database complex file(semester 2 second file)  
 	df3 = pd.read_excel(root_filename1, sheet_name = 1, usecols = 'C:AA', header = 13)
-	df3.to_sql('semester2com1', con = engine, if_exists = 'replace', index = FALSE)
+	df3.to_sql('complex_previous', con = engine, if_exists = 'replace', index = FALSE)
 
-	#transferring data to a sql database simple(supplimentary semester first file)
-	df4 = pd.read_excel(root_filename2, sheet_name = 0, usecols = 'C:T', skiprows = 0, header = 10)
-	df4.to_sql('semester3simple', con = engine, if_exists ='replace', index = FALSE)
+	#further cleaning the database(effectively taking out all null values)
+	#connecting to database
 
-	df5 = pd.read_excel(root_filename2 , sheet_name = 1, usecols = 'C:AA', header = 13)
-	df5.to_sql('semester3com1' ,con = engine, if_exists ='replace' ,index = FALSE)
-
-
-	#connecting program to database for value manipulation
-
-	connection = sqlite3.connect('semester1_simple_com.sqlite')
-	c = connection.cursor()
-	#finding maxmimum number of subjects in that particular year
-	c.execute("SELECT * FROM semester1simple")
-	c.fetchall()
+	
 
 	#Error correction
 
 
 
 #function for analysis and report of a pdf file
+
+def report_xlsx1():
+	engine1 = create_engine("sqlite:///db2.sqlite")
+	#transfering data from the current simple file to database
+	df = pd.read_excel(root_filename, sheet_name = 0, header = 10 , usecols="C:T", skiprows = 0)
+	df.to_sql ("simple_current",con= engine1, if_exists = "replace", index = FALSE)
+
+	#transfering data from current complex file to database
+	df1 = pd.read_excel(root_filename, sheet_name = 1, header = 13, usecols = "C:AA", skiprows = 0)
+	df1.to_sql("complex_current",con = engine1, if_exists= "replace", index = FALSE )
+
+	#transfering data from current complex file to database
+	df2 = pd.read_excel(root_filename1, sheet_name= 0, header = 10, usecols = "C:T",skiprows = 0)
+	df2.to_sql("simple_previous", con = engine1, if_exists ="replace",index = FALSE)
+
+	df3 = pd.read_excel(root_filename1, sheet_name=1, header = 13, usecols = "C:AA", skiprows = 0)
+	df3.to_sql("complex_previous", con = engine1, if_exists = "replace", index = FALSE)
+
+	df4 = pd.read_excel(root_filename2, sheet_name=0, header = 10, usecols = "C:T", skiprows = 0)
+	df4.to_sql("simple_supplimentary", con = engine1, if_exists = "replace", index = FALSE)
+
+	df5 = pd.read_excel(root_filename2, sheet_name=1, header = 13, usecols = "C:W", skiprows = 0)
+	df5.to_sql("complex_supplimentary", con = engine1, if_exists = "replace", index = FALSE)
+
+
+	#transfering data from previous complex file to database
+
+
 
 def report_pdf():
 	#analysing the first semester pdf file
@@ -243,35 +300,141 @@ def command_edit3():
 def initial_button_function1():
 	#prievous file selected
 	global root_filename1
-	root_filename1 = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("pdf file", "*.pdf"),("docx file", "*.docx"),)) 
+	root_filename1 = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("all files","*.*")))
 	Label22.configure(text="File Selected: "+root_filename1)
 	
 
 def initial_button_function():
 	#current file selected
 	global root_filename
-	root_filename = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("pdf file", "*.pdf"),("docx file", "*.docx"),))
+	root_filename = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("all files","*.*")))
 	Label11.configure(text="File Selected: "+root_filename)
 
 def initial_button_function2():
 	#supplimentary file selected
 	global root_filename2
-	root_filename2 = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("pdf file", "*.pdf"),("docx file", "*.docx"),))
+	root_filename2 = filedialog.askopenfilename(initialdir="C", title="Select file to Audit", filetypes=(("xlsx file", "*.xlsx"),("all files","*.*")))
 	Label33.configure(text="File Selected: "+root_filename2)
 	
 #detection of the extension name of the file
 
-def extention_detection():
+def file_checking():
+	#checking whether the file was inputed and whether the file is an xlsx file
 	ext = root_filename.split(".")[-1]
 	ext1 = root_filename1.split(".")[-1]
-	if ext and ext1 == "xlsx":
-		report_xlsx()
-	elif ext and ext1 == "docx":
-		report_docx()
-	elif ext and ext1 == "pdf":
-		report_pdf()
+
+	if (options == "YEAR 1" or options == "YEAR 3" or options =="YEAR 2" or options =="YEAR 4") and (options1 == "SECOND SEMESTER" or options1 == "SUPPLIMENTARY SEMESTER"):
+		if root_filename == "" or root_filename1 == "":
+			messagebox.showwarning("Error","A file(s) was not selected")
+		else:
+			if ext != "xlsx" or ext1 != "xlsx":
+				messagebox.showerror("Error", "A file(s) was not in the excel format")
+			else:
+				file_checking2_1()
+	elif (options == "YEAR 2" or options == "YEAR 3" or options == "YEAR 4") and (options1 == "FIRST SEMESTER"):
+		ext2 = root_filename2.split(".")[-1]
+		if root_filename == "" or root_filename1 == "" or root_filename2 == "":
+			messagebox.showwarning("Error", "A field(s) was not selected")
+		else:
+			if ext != "xlsx" or ext1 != "xlsx" or ext2 != "xlsx":
+				messagebox.showerror("Error", "A file(s) was not is the excel format")
+			else:
+				file_checking2_2()
+
+def file_checking2_1():
+	#checking to see whether the file is comprehensive or summarixed , and checking to see whether file is of the correct year and semester
+	#for the first file
+		if options1 == "SUPPLIMENTARY SEMESTER":
+			shadow_options1 = "SECOND SEMESTER"
+		elif options1 == "SECOND SEMESTER":
+			shadow_options1 = "FIRST SEMESTER"
+
+
+		wb = load_workbook(root_filename)
+		wb1 = load_workbook(root_filename1)
+		res = len(wb.sheetnames)
+		res1 = len(wb1.sheetnames)
+
+		if res != 2 or res1 != 2:
+			messagebox.showerror("Error", "The file selected is not comprehensive")
+
+		ws = wb["Sheet1"]
+		ws1 = wb1["Sheet1"]
+		
+
+		row = ws["E8"]
+		row1 = ws1["E8"]
+
+		sentence = row.value.split(",")[0]
+		sentence1 = row1.value.split(",")[0]
+	
+
+		if f"RESULTS OF {options} {options1}" != sentence:
+			messagebox.showerror("Error" ,"The file selected is not of the same year or semester")
+		elif f"RESULTS OF {options} {shadow_options1}" != sentence1:
+			messagebox.showerror("Error","The file(previous semester) selected is not of the same year or semester")
+		else:
+			report_xlsx()
+
+		
+
+
+def file_checking2_2():
+		shadow_options1 = "SECOND SEMESTER"
+		shadow_options2 = "SUPPLEMENTARY SEMESTER"
+
+		if options == "YEAR 2" and options1 == "FIRST SEMESTER":
+	 		shadow_options = "YEAR 1"
+		elif options == "YEAR 3" and options1 == "FIRST SEMESTER":
+			shadow_options = "YEAR 2"
+		elif options == "YEAR 4" and options1 =="FIRST SEMESTER":
+			shadow_options = "YEAR 3"
+
+		wb = load_workbook(root_filename)
+		wb1 = load_workbook(root_filename1)
+		wb2 = load_workbook(root_filename2)
+		res = len(wb.sheetnames)
+		res1 = len(wb1.sheetnames)
+		res2 = len(wb2.sheetnames)
+
+		if res1 != 2 or res != 2 or res2 != 2:
+			messagebox.showerror("Error", "File selected is not comprehensive")
+
+		ws = wb["Sheet1"]
+		ws1 = wb1["Sheet1"]
+		ws2 = wb2["Sheet2"]
+
+		row = ws["E8"]
+		row1 = ws1["E8"]
+		row2 = ws2["E8"]
+
+		sentence = row.value.split(",")[0]
+		sentence1 = row1.value.split(",")[0]
+		sentence2 = row2.value.split(",")[0]
+
+		date = row.value.split(",")[1]
+		date1 = row.value.split(",")[1]
+		date2 = row.value.split(",")[1]
+
+
+		if f"RESULTS OF {options} {options1}" != sentence:
+			messagebox.showerror("Error","File selected is not of the same year or semester")
+			print("1")
+		elif f"RESULTS OF {shadow_options} {shadow_options1}" != sentence1:
+			messagebox.showerror("Error", "File selected is not of the same year or semester")
+			print("2")
+		elif f"RESULTS OF {shadow_options} {shadow_options2}" != sentence2:
+			messagebox.showerror("Error","File selected is not of the same year or semester")
+			print("3")
+		else:
+			report_xlsx1()
+
+
+
+
 
 def next():
+	global options,options1
 	
 	#checking for the options chosen (the year and the semester)
 	options = clicked.get()
@@ -279,12 +442,9 @@ def next():
 	global Label11, Label22, Label33, button_on_initial1, button_on_audit, button_on_initial, button_on_audit, Beginning, Label33, Beginning2, button_back
 	button_back = Button(frame, text="back" , command=destroyer)
 
-
-	
-
-	if (options == "year1") and (options1 == "semester1"):
+	if (options == "YEAR 1") and (options1 == "FIRST SEMESTER"):
 		messagebox.showerror("Error", "Year1 semster1 cannot be compared with any other file")
-	elif (options == "year1" or options == "year3" or options =="year2" or options =="year4") and (options1 == "semester2" or options1 == "semester3"):
+	elif (options == "YEAR 1" or options == "YEAR 3" or options =="YEAR 2" or options =="YEAR 4") and (options1 == "SECOND SEMESTER" or options1 == "SUPPLIMENTARY SEMESTER"):
 		'''top = Toplevel()
 		top.geometry("800x300")
 		top.title("Audit")'''
@@ -314,10 +474,10 @@ def next():
 		button_on_initial1.grid(row=4, column=1)
 
 
-		button_on_audit = Button(frame, text="Audit", command=extention_detection)
+		button_on_audit = Button(frame, text="Audit", command=file_checking)
 		button_on_audit.grid(row=8, column=2,padx =15)
 	
-	elif (options == "year2" or options == "year3" or options == "year4") and (options1 == "semester1"):
+	elif (options == "YEAR 2" or options == "YEAR 3" or options == "YEAR 4") and (options1 == "FIRST SEMESTER"):
 		'''top1 = Toplevel()
 		top1.geometry("800x300")
 		top1.title("Audit")'''
@@ -356,7 +516,7 @@ def next():
 		button_on_initial2.grid(row=6, column=1)
 
 
-		button_on_audit = Button(frame, text="Audit", command=extention_detection)
+		button_on_audit = Button(frame, text="Audit", command=file_checking)
 		button_on_audit.grid(row=8, column=2,padx =15)
 
 		li = [Label11, Label22, Label33, button_on_initial1, button_on_audit, button_on_initial, button_on_audit, Beginning, Label33, Beginning2,button_on_initial2]
@@ -368,25 +528,30 @@ def destroyer():
 
 def back(): 
 
+
 	global dropbox, dropbox1, clicked1, clicked, frame, button_next
-	frame = LabelFrame(root, text="Please select current academic year and semester" , padx=5, pady=5)
+	frame = LabelFrame(root, text="Please select the required feild" , padx=5, pady=5)
 	frame.pack(padx=20, pady=20)
 
 	clicked = StringVar()
-	clicked.set("year1")
+	clicked.set("YEAR 1")
 
 	clicked1 = StringVar()
-	clicked1.set("semester1")
+	clicked1.set("FIRST SEMESTER")
 
-	dropbox = OptionMenu(frame,clicked,"year1", "year2", "year3", "year4",)
-	dropbox.grid(row=4, column=5, padx=155, pady=15)
+	dropbox = OptionMenu(frame,clicked,"YEAR 1", "YEAR 2", "YEAR 3", "YEAR 4",)
+	dropbox.grid(row=4, column=5, padx=155, pady=15) 
 
-	dropbox1 = OptionMenu(frame, clicked1, "semester1","semester2","semester3")
+	dropbox1 = OptionMenu(frame, clicked1, "FIRST SEMESTER","SECOND SEMESTER","SUPPLIMENTARY SEMESTER")
 	dropbox1.grid(row=10, column=5, padx=15, pady=15)
 
 	button_next = Button(frame, text="Next" , command=next)
 	button_next.grid(row=14, column=5, padx=15, pady=15)
 
+
+root_filename = ""
+root_filename1 = ""
+root_filename2 = ""
 back()
 
 
