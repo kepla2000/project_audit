@@ -13,6 +13,8 @@ from docx2pdf import convert
 from openpyxl import Workbook, load_workbook
 from openpyxl.utils import get_column_letter
 import numpy as np
+import re 
+import aspose.words as aw
 
 
 
@@ -779,6 +781,8 @@ def file_checking2_1():
 	#checking to see whether the file is comprehensive or summarixed , and checking to see whether file is of the correct year and semester
 	#for the first file
 		global sentence
+		global sentence1
+		global shadow_options1
 		if options1 == "SUPPLEMENTARY SEMESTER":
 			shadow_options1 = "SECOND SEMESTER"
 		elif options1 == "SECOND SEMESTER":
@@ -1008,17 +1012,245 @@ def xlsx_audit_function_2FS():
 
 
 	#conditions1(if the current file is not a supplementary file)
-	if sentence != "RESULTS OF YEAR 1 SUPPLEMENTARY SEMESTER":
+	if "SUPPLEMENTARY" not in sentence:
 		if final_kounter1 + final_kounter2 + final_kounter3 + final_kounter4 != final_kounter11 + final_kounter22 + final_kounter33 + final_kounter44 + final_kounter55:
-			print("The students don't add up")
+			variable = ("REMAKES:The students don't add up")
 		else:
-			print("The students add up")
+			varaible = ("REMAKES:The students add up")
 	else:
 		if final_kounter2 + final_kounter4 != final_kounter11 + final_kounter22 + final_kounter33 + final_kounter44 + final_kounter55:
-			print("The students don't add up")
+			variable = ("REMAKES:The students don't add up")
 		else:
-			print("The students add up")
-		print("The following students did not write their trailied papers")
+			varible = ("REMAKES:The students add up")
+
+	#all variables in this function 
+
+
+
+	#creating a docx file to display information on screen
+	doc = aw.Document()
+
+	#creating a document builder
+	builder = aw.DocumentBuilder(doc)
+
+	#creating a font for the file 
+	font = builder.font
+	font.size = 15
+	font.bold = True
+	font.name = "Times New Roman"
+
+	#adding information from analysis to file
+	builder.write(f"TOTAL NUMBER OF STUDENT FOR EVERY SECTION(RESULTS OF {options} {options1})")
+
+	#creating a table to insert values
+	table = builder.start_table()
+
+	#inserting a cell
+	builder.insert_cell()
+	table.auto_fit(aw.tables.AutoFitBehavior.AUTO_FIT_TO_CONTENTS)
+
+
+	#setting format and inserting and adding text
+	builder.cell_format.vertical_alignment = aw.tables.CellVerticalAlignment.CENTER
+	builder.write("SECTIONS")
+
+
+	#inserting another cell 
+
+	builder.insert_cell()
+	builder.write("TOTAL NUMBER OF STUDENTS FOR EACH SECTION")
+
+	#ending the row 
+	builder.end_row()
+
+	#inserting another cell
+	builder.insert_cell()
+
+	#formating current row 
+	builder.row_format.height = 100
+	builder.row_format.height_rule = aw.HeightRule.EXACTLY
+
+	#inserting into current cell
+
+	builder.write("Number of students that passed (current file chosen)")
+
+	#creating cell
+
+	builder.insert_cell()
+	builder.write(str(final_kounter1))
+
+	#ending row 
+	builder.end_row()
+
+	#inserting another cell
+	builder.insert_cell()
+	builder.write("Number of students that are trailing up to four courses(current file chosen)")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter2))
+
+	builder.end_row()
+
+
+	builder.insert_cell()
+	builder.write("Number of students that are trailing more than four courses(current file chosen)")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter3))
+
+	builder.end_row()
+
+	builder.insert_cell()
+	builder.write("Number of students that have CWA less than 45(current file selected)")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter4))
+
+	builder.end_row()
+
+	builder.insert_cell()
+	builder.write("Number of students that abandoned the course (current file selected)")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter5))
+
+	builder.end_row()
+	builder.end_table()
+
+	
+	builder.write(variable)
+
+
+
+
+	
+
+
+
+	#creating a different table for previous file selected
+	######################################################
+	######################################################
+
+
+	builder1 = aw.DocumentBuilder(doc)
+
+	#creating a font for the file 
+	#############################
+	font1 = builder1.font
+	font1.size = 15
+	font1.bold = True
+	font1.name = "Times New Roman"
+
+	#adding information from analysis to file
+	builder1.write(f"TOTAL NUMBER OF STUDENT FOR EVERY SECTION(RESULTS OF {options} {shadow_options1})")
+
+	#creating a table to insert values
+	table1 = builder1.start_table()
+
+	#inserting a cell
+	builder1.insert_cell()
+	table1.auto_fit(aw.tables.AutoFitBehavior.AUTO_FIT_TO_CONTENTS)
+
+
+	#setting format and inserting and adding text
+	builder1.cell_format.vertical_alignment = aw.tables.CellVerticalAlignment.CENTER
+	builder1.write("SECTIONS")
+
+
+	#inserting another cell 
+
+	builder1.insert_cell()
+	builder1.write("TOTAL NUMBER OF STUDENTS FOR EACH SECTION")
+
+	#ending the row 
+	builder1.end_row()
+
+	#inserting another cell
+	builder1.insert_cell()
+
+	#formating current row 
+	builder1.row_format.height = 100
+	builder1.row_format.height_rule = aw.HeightRule.EXACTLY
+
+	#inserting into current cell
+
+	builder1.write("Number of students that passed (previous file chosen)")
+
+	#creating cell
+
+	builder1.insert_cell()
+	builder1.write(str(final_kounter11))
+
+	#ending row 
+	builder1.end_row()
+
+	#inserting another cell
+	builder1.insert_cell()
+	builder1.write("Number of students that are trailing up to four courses(previous file chosen)")
+
+	builder1.insert_cell()
+	builder1.write(str(final_kounter22))
+
+	builder1.end_row()
+
+
+	builder1.insert_cell()
+	builder1.write("Number of students that are trailing more than four courses(previous file chosen)")
+
+	builder1.insert_cell()
+	builder1.write(str(final_kounter33))
+
+	builder1.end_row()
+
+	builder1.insert_cell()
+	builder1.write("Number of students that have CWA less than 45(previous file selected)")
+
+	builder1.insert_cell()
+	builder1.write(str(final_kounter44))
+
+	builder1.end_row()
+
+	builder1.insert_cell()
+	builder1.write("Number of students that abandoned the course (previous file selected)")
+
+	builder1.insert_cell()
+	builder1.write(str(final_kounter55))
+
+
+	builder1.end_row()
+	builder1.end_table()
+
+
+
+
+
+
+	doc.save(f"REPORT FOR {options} {options1} and {shadow_options1}.docx")
+
+	os.startfile(f"REPORT FOR {options} {options1} and {shadow_options1}.docx")
+
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1235,25 +1467,90 @@ def xlsx_audit_function_3FS():
 	else:
 		print("The students don't add up")
 
+	#final_kounter1TFS (Number of students that passed current)
+	#final_kounter2TFS(Number of students that are trailing up to four courses current)
+	#final_kounter3TFS(Number of students that are trailing more than four courses current)
+	#fianl_kounter4TFS(Number of students that have CWA less than 45 current)
+	#fianl_kounter5TFS(Number of students that abandoned the course current)
+	#fianl_kounter11TFS(Number of students that passed previous)
+	#fianl_kounter22TFS(Number of students that are trailing up to four courses previous)
+	#fianl_kounter33TFS(Number of students that are trailing more than four courses previous)
+	#fianl_kounter44TFS(Number of students that have CWA less than 45 previou)
+	#fianl_kounter55TFS(Number of students that hava abandoned the course previous)
+	#fianl_kounter111TFS(Number of students that have passed supplementry)
+	#fianl_kounter222TFS(Number of students that are trailing up to four courses supplementry)
+	#fianl_kounter333TFS(Number of students that are trailing more than four courses supplementry)
+	#fianl_kounter444TFS(Number of students that have CWA less than 45)
+	#fianl_kounter555TFS(Number of students that have abandoned the course)
+	
+
+
+def paranthesis_remover(value):
+	convert = list(value)
+	convert.remove("(")
+	convert.remove(")")
+	interger_convert = int(convert[0])
+	return interger_convert
+
+
 
 def auditing_function2_checking_credit_registered2FS():
-	#FINDING WHETHER ALL STUDENTS HAVE THE RIGHT NUMBER OF CREDITS HOURS REGISTERED CURRENT
+	#CHECKING THE TOTAL NUMBER OF CREDIT HOURS FOR SEMESTER
 	connection2 = sqlite3.connect("original_database.db")
 	c3 = connection2.cursor()
 	c3.execute("SELECT * FROM NUMBER_OF_STUDENTS_PASSED_CURRENT")
 	default_list = []
+	functional_list = [] #list i will be working with storing all the credit hours for the current courses that are been taken
+	if "SUPPLEMENTARY" in sentence:
+		#FINDING THE APPROPRIATE NUMBER OF REGISTERED CREDIT HOURS (IN CASE CURRENT IS SUPPLEMENTARY)
+		total_credit_hours_supplementary = 0
+		for o in c3.fetchmany(3):
+			for i in o[3]:
+				for x in range(15, 15 + len(o)):
+					if i[x] != None:
+						total_credit_hours_supplementary = total_credit_hours_supplementary + i[x]
+					else:
+						continue
+		print(total_credit_hours_supplementary)
 
-	for i in c3.fetchall():
-		default_list.append(i)
+				
 
-		print(default_list)
 
-		#item = default_list[1]
-		#dnumber = len(item)
-		#print(dnumber)
-		#for i in range(15, item):
-			#if item[i] != None:
-				#print(item[i])
+		
+	else:
+		for i in c3.fetchmany(2):
+			default_list.append(i)
+		total_credit_hours = 0
+		functional_list = list(default_list[1])
+		for x in range(14, len(functional_list)):
+			if functional_list[x] != None:
+				number = paranthesis_remover(functional_list[x])
+				total_credit_hours = total_credit_hours + number
+			else:
+		
+				continue
+	#finding whether all students have the right number of credit hours registerd and calculated
+	#current 2FS
+	for a in c3.fetchall():
+		if int(a[4]) == total_credit_hours:
+			print(a[3] + " had accurate credit registered")
+		else:
+			print(a[3] + " had inaccurate credit registered")
+
+
+
+
+
+
+
+
+
+
+
+
+			
+
+
 
 	
 		
