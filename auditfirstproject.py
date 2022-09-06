@@ -233,6 +233,7 @@ def report_xlsx():
 
 	xlsx_audit_function_2FS()
 	auditing_function2_checking_credit_registered2FS()
+	auditing_function3_2FS_checking_missing_trails()
 
 
 
@@ -380,6 +381,8 @@ def report_xlsx1():
 			AbandonedTFSs()
 
 	xlsx_audit_function_3FS()
+	auditing_function2_checking_credit_registered3FS()
+	auditing_function3_3FS_checking_missing_trials()
 	
 
 
@@ -822,6 +825,8 @@ def file_checking2_1():
 
 
 def file_checking2_2():
+		global shadow_options1
+		global shadow_options2
 		shadow_options1 = "SECOND SEMESTER"
 		shadow_options2 = "SUPPLEMENTARY SEMESTER"
 
@@ -874,6 +879,8 @@ def file_checking2_2():
 
 #calculating auditing functions for the two file system
 def xlsx_audit_function_2FS():
+	global variable
+	global final_kounter1 ,final_kounter2 , final_kounter3 , final_kounter4, final_kounter5 ,final_kounter11 , final_kounter22 , final_kounter33 , final_kounter44 , final_kounter55
 	#checking total number of students tally up
 	connection2FS = sqlite3.connect("original_database.db")
 	c = connection2FS.cursor()
@@ -1016,109 +1023,24 @@ def xlsx_audit_function_2FS():
 		if final_kounter1 + final_kounter2 + final_kounter3 + final_kounter4 != final_kounter11 + final_kounter22 + final_kounter33 + final_kounter44 + final_kounter55:
 			variable = ("REMAKES:The students don't add up")
 		else:
-			varaible = ("REMAKES:The students add up")
+			variable = ("REMAKES:The students add up")
 	else:
 		if final_kounter2 + final_kounter4 != final_kounter11 + final_kounter22 + final_kounter33 + final_kounter44 + final_kounter55:
 			variable = ("REMAKES:The students don't add up")
 		else:
-			varible = ("REMAKES:The students add up")
+			variable = ("REMAKES:The students add up")
 
-	#all variables in this function 
+	#creating of a sub function detailing why students do not add up(if they do not add up)
 
-
-
-	#creating a docx file to display information on screen
-	doc = aw.Document()
-
-	#creating a document builder
-	builder = aw.DocumentBuilder(doc)
-
-	#creating a font for the file 
-	font = builder.font
-	font.size = 15
-	font.bold = True
-	font.name = "Times New Roman"
-
-	#adding information from analysis to file
-	builder.write(f"TOTAL NUMBER OF STUDENT FOR EVERY SECTION(RESULTS OF {options} {options1})")
-
-	#creating a table to insert values
-	table = builder.start_table()
-
-	#inserting a cell
-	builder.insert_cell()
-	table.auto_fit(aw.tables.AutoFitBehavior.AUTO_FIT_TO_CONTENTS)
+	#list of students that make up the current file
+	current_students = []
+	previous_students = []
 
 
-	#setting format and inserting and adding text
-	builder.cell_format.vertical_alignment = aw.tables.CellVerticalAlignment.CENTER
-	builder.write("SECTIONS")
 
 
-	#inserting another cell 
-
-	builder.insert_cell()
-	builder.write("TOTAL NUMBER OF STUDENTS FOR EACH SECTION")
-
-	#ending the row 
-	builder.end_row()
-
-	#inserting another cell
-	builder.insert_cell()
-
-	#formating current row 
-	builder.row_format.height = 100
-	builder.row_format.height_rule = aw.HeightRule.EXACTLY
-
-	#inserting into current cell
-
-	builder.write("Number of students that passed (current file chosen)")
-
-	#creating cell
-
-	builder.insert_cell()
-	builder.write(str(final_kounter1))
-
-	#ending row 
-	builder.end_row()
-
-	#inserting another cell
-	builder.insert_cell()
-	builder.write("Number of students that are trailing up to four courses(current file chosen)")
-
-	builder.insert_cell()
-	builder.write(str(final_kounter2))
-
-	builder.end_row()
 
 
-	builder.insert_cell()
-	builder.write("Number of students that are trailing more than four courses(current file chosen)")
-
-	builder.insert_cell()
-	builder.write(str(final_kounter3))
-
-	builder.end_row()
-
-	builder.insert_cell()
-	builder.write("Number of students that have CWA less than 45(current file selected)")
-
-	builder.insert_cell()
-	builder.write(str(final_kounter4))
-
-	builder.end_row()
-
-	builder.insert_cell()
-	builder.write("Number of students that abandoned the course (current file selected)")
-
-	builder.insert_cell()
-	builder.write(str(final_kounter5))
-
-	builder.end_row()
-	builder.end_table()
-
-	
-	builder.write(variable)
 
 
 
@@ -1132,102 +1054,9 @@ def xlsx_audit_function_2FS():
 	######################################################
 
 
-	builder1 = aw.DocumentBuilder(doc)
-
-	#creating a font for the file 
-	#############################
-	font1 = builder1.font
-	font1.size = 15
-	font1.bold = True
-	font1.name = "Times New Roman"
-
-	#adding information from analysis to file
-	builder1.write(f"TOTAL NUMBER OF STUDENT FOR EVERY SECTION(RESULTS OF {options} {shadow_options1})")
-
-	#creating a table to insert values
-	table1 = builder1.start_table()
-
-	#inserting a cell
-	builder1.insert_cell()
-	table1.auto_fit(aw.tables.AutoFitBehavior.AUTO_FIT_TO_CONTENTS)
-
-
-	#setting format and inserting and adding text
-	builder1.cell_format.vertical_alignment = aw.tables.CellVerticalAlignment.CENTER
-	builder1.write("SECTIONS")
-
-
-	#inserting another cell 
-
-	builder1.insert_cell()
-	builder1.write("TOTAL NUMBER OF STUDENTS FOR EACH SECTION")
-
-	#ending the row 
-	builder1.end_row()
-
-	#inserting another cell
-	builder1.insert_cell()
-
-	#formating current row 
-	builder1.row_format.height = 100
-	builder1.row_format.height_rule = aw.HeightRule.EXACTLY
-
-	#inserting into current cell
-
-	builder1.write("Number of students that passed (previous file chosen)")
-
-	#creating cell
-
-	builder1.insert_cell()
-	builder1.write(str(final_kounter11))
-
-	#ending row 
-	builder1.end_row()
-
-	#inserting another cell
-	builder1.insert_cell()
-	builder1.write("Number of students that are trailing up to four courses(previous file chosen)")
-
-	builder1.insert_cell()
-	builder1.write(str(final_kounter22))
-
-	builder1.end_row()
-
-
-	builder1.insert_cell()
-	builder1.write("Number of students that are trailing more than four courses(previous file chosen)")
-
-	builder1.insert_cell()
-	builder1.write(str(final_kounter33))
-
-	builder1.end_row()
-
-	builder1.insert_cell()
-	builder1.write("Number of students that have CWA less than 45(previous file selected)")
-
-	builder1.insert_cell()
-	builder1.write(str(final_kounter44))
-
-	builder1.end_row()
-
-	builder1.insert_cell()
-	builder1.write("Number of students that abandoned the course (previous file selected)")
-
-	builder1.insert_cell()
-	builder1.write(str(final_kounter55))
-
-
-	builder1.end_row()
-	builder1.end_table()
 
 
 
-
-
-
-	doc.save(f"REPORT FOR {options} {options1} and {shadow_options1}.docx")
-
-	os.startfile(f"REPORT FOR {options} {options1} and {shadow_options1}.docx")
 
 	
 
@@ -1256,6 +1085,9 @@ def xlsx_audit_function_2FS():
 
 
 def xlsx_audit_function_3FS():
+	global condition
+	global final_kounter1TFS, final_kounter2TFS , final_kounter3TFS , final_kounter4TFS ,final_kounter5TFS,final_kounter11TFS , final_kounter22TFS , final_kounter33TFS , final_kounter44TFS,final_kounter55TFS,final_kounter111TFS , final_kounter222TFS , final_kounter333TFS , final_kounter444TFS, final_kounter555TFS
+
 
 	connection1 = sqlite3.connect("original_database2.db")
 	c1 = connection1.cursor()
@@ -1299,7 +1131,7 @@ def xlsx_audit_function_3FS():
 
 	#finding the number of students that have CWA less than 45 current tfs
 	try:
-		c1.execute("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_CURRENT")
+		c1.execute("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_CURRENT_TFS")
 		kounter4TFS = 0
 		for i in c1.fetchall():
 			if type(i[0]) == str:
@@ -1314,7 +1146,7 @@ def xlsx_audit_function_3FS():
 
 	#finding the number of students that have abandoned the course
 	try:
-		c1.execute("SELECT * FROM ABANDONED_COURSE_CURRENT")
+		c1.execute("SELECT * FROM ABANDONED_COURSE_CURRENT_TFS")
 		kounter5TFS = 0
 		for i in c1.fetchall():
 			kounter5TFS = kounter5TFS + 1
@@ -1335,9 +1167,11 @@ def xlsx_audit_function_3FS():
 	kounter11TFS = 0
 	for i in c1.fetchall():
 		kounter11TFS = kounter11TFS + 1
-	final_kounter11TFS = (kounter11TFS - 3)/2
-	print("the number of students that passed the previous semester TFS")
+	final_kounter11TFS = kounter11TFS - 2
+	print("The number of students that passed previous semester 3FS")
 	print(final_kounter11TFS)
+
+
 
 	#finding the number of students that have up to four trails previous TFS
 	c1.execute("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_PREVIOUS_TFS")
@@ -1365,7 +1199,7 @@ def xlsx_audit_function_3FS():
 
 
 	try:
-		c1.execute("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_PREVIOUS")
+		c1.execute("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_PREVIOUS_TFS")
 		kounter44TFS = 0
 		for i in c1.fetchall():
 			if type(i[0]) == str:
@@ -1381,7 +1215,7 @@ def xlsx_audit_function_3FS():
 	#finding the number of students that have abandoned the courses
 
 	try:
-		c1.execute("SELECT * FROM ABANDONED_COURSE_PREVIOUS")
+		c1.execute("SELECT * FROM ABANDONED_COURSE_PREVIOUS_TFS")
 		kounter55TFS = 0
 		for i in c1.fetchall():
 			kounter55TFS = kounter55TFS + 1
@@ -1402,10 +1236,11 @@ def xlsx_audit_function_3FS():
 	c1.execute("SELECT * FROM NUMBER_OF_STUDENTS_PASSED_SUPPLEMENTARY_TFS")
 	kounter111TFS = 0
 	for i in c1.fetchall():
-		kounter111TFS = kounter111TFS + 1
-	final_kounter111TFS = (kounter111TFS - 3)/2
-	print("the number of students that passed the supplementary semester TFS")
+		kounter111TFS = kounter1TFS + 1
+	final_kounter111TFS = kounter1TFS - 2
+	print("The number of students that passed supplementary 3FS")
 	print(final_kounter111TFS)
+
 
 	#finding the number of students that have up to four trails supplementary TFS
 	c1.execute("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_SUPPLEMENTARY_TFS")
@@ -1433,7 +1268,7 @@ def xlsx_audit_function_3FS():
 	#finding the number of students that have cwa less than 45 supplementary
 
 	try:
-		c1.execute("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_SUPPLEMENTARY")
+		c1.execute("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_SUPPLEMENTARY_TFS")
 		kounter444TFS = 0
 		for i in c1.fetchall():
 			if type(i[0]) == str:
@@ -1449,7 +1284,7 @@ def xlsx_audit_function_3FS():
 	#finding the number of students that have abandoned the courses supplementary
 
 	try:
-		c1.execute("SELECT * FROM ABANDONED_COURSE_SUPPLEMENTARY")
+		c1.execute("SELECT * FROM ABANDONED_COURSE_SUPPLEMENTARY_TFS")
 		kounter555TFS = 0
 		for i in c1.fetchall():
 			kounter555TFS = kounter555TFS + 1
@@ -1462,10 +1297,10 @@ def xlsx_audit_function_3FS():
 
 
 	#CONDITIONS NEEDED
-	if final_kounter1TFS + final_kounter2TFS + final_kounter3TFS + final_kounter4TFS + final_kounter5TF == (final_kounter11TFS + final_kounter22TFS + final_kounter33TFS + final_kounter44TFS) + (final_kounter111TFS + final_kounter222TFS + final_kounter333TFS + final_kounter444TFS):
-		print("The students add up")
+	if final_kounter1TFS + final_kounter2TFS + final_kounter3TFS + final_kounter4TFS + final_kounter5TFS == (final_kounter11TFS + final_kounter22TFS + final_kounter33TFS + final_kounter44TFS) + (final_kounter111TFS + final_kounter222TFS + final_kounter333TFS + final_kounter444TFS):
+		condition ="The students add up"
 	else:
-		print("The students don't add up")
+		condition = "The students don't add up"
 
 	#final_kounter1TFS (Number of students that passed current)
 	#final_kounter2TFS(Number of students that are trailing up to four courses current)
@@ -1482,6 +1317,7 @@ def xlsx_audit_function_3FS():
 	#fianl_kounter333TFS(Number of students that are trailing more than four courses supplementry)
 	#fianl_kounter444TFS(Number of students that have CWA less than 45)
 	#fianl_kounter555TFS(Number of students that have abandoned the course)
+
 	
 
 
@@ -1493,53 +1329,137 @@ def paranthesis_remover(value):
 	return interger_convert
 
 
+######################################################################################
+#reusable functions for finding credit hours above 21
+
+def calculation_for_checking_credit_registered2FS_and_3FS_current(query, database_name):
+	try:
+		print("hello1")
+		connection2 = sqlite3.connect(database_name)
+		c3 = connection2.cursor()
+		c3.execute(query)
+
+
+		default_number = 21
+		ano_list = []
+		credit_hours_above_21_list = []
+		#current 
+		for i in c3.fetchall():
+			ano_list.append(i)
+		del ano_list[0] 
+		del ano_list[0]	
+
+		for a in ano_list:
+			if int(a[4]) >= 22:
+				default_variable1 = a[3] + " had credit registered to be greater than 21"
+				credit_hours_above_21_list.append(default_variable1)
+			else:
+				continue
+	except:
+		credit_hours_above_21_list = []
+	return credit_hours_above_21_list	
+
+
+
+def calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent(query, database_name):
+	try:
+		connection2 = sqlite3.connect(database_name)
+		c3 = connection2.cursor()
+		c3.execute(query)
+
+		default_number = 21
+		ano_list = []
+		credit_hours_above_21_list = []
+		#current 
+		for i in c3.fetchall():
+			ano_list.append(i)
+		del ano_list[0]
+		del ano_list[0]
+		del ano_list[0]
+
+		for a in ano_list:
+			if int(a[4]) >= 22:
+				default_variable1 = a[3] + " had credit registered to be greater than 21"
+				credit_hours_above_21_list.append(default_variable1)
+			else:
+				continue
+	except:
+		credit_hours_above_21_list = []
+
+	return credit_hours_above_21_list
+
+
+
+
+
 
 def auditing_function2_checking_credit_registered2FS():
-	#CHECKING THE TOTAL NUMBER OF CREDIT HOURS FOR SEMESTER
-	connection2 = sqlite3.connect("original_database.db")
-	c3 = connection2.cursor()
-	c3.execute("SELECT * FROM NUMBER_OF_STUDENTS_PASSED_CURRENT")
-	default_list = []
-	functional_list = [] #list i will be working with storing all the credit hours for the current courses that are been taken
-	if "SUPPLEMENTARY" in sentence:
-		#FINDING THE APPROPRIATE NUMBER OF REGISTERED CREDIT HOURS (IN CASE CURRENT IS SUPPLEMENTARY)
-		total_credit_hours_supplementary = 0
-		for o in c3.fetchmany(3):
-			for i in o[3]:
-				for x in range(15, 15 + len(o)):
-					if i[x] != None:
-						total_credit_hours_supplementary = total_credit_hours_supplementary + i[x]
-					else:
-						continue
-		print(total_credit_hours_supplementary)
+	global total_value1
 
-				
-
-
-		
-	else:
-		for i in c3.fetchmany(2):
-			default_list.append(i)
-		total_credit_hours = 0
-		functional_list = list(default_list[1])
-		for x in range(14, len(functional_list)):
-			if functional_list[x] != None:
-				number = paranthesis_remover(functional_list[x])
-				total_credit_hours = total_credit_hours + number
-			else:
-		
-				continue
-	#finding whether all students have the right number of credit hours registerd and calculated
-	#current 2FS
-	for a in c3.fetchall():
-		if int(a[4]) == total_credit_hours:
-			print(a[3] + " had accurate credit registered")
-		else:
-			print(a[3] + " had inaccurate credit registered")
+	##############################################################################################
+	#CURRENT
 
 
 
 
+	#########
+	#calculating to see whether students that passed have all their credit hours courses below 21
+
+	value1 = calculation_for_checking_credit_registered2FS_and_3FS_current("SELECT * FROM NUMBER_OF_STUDENTS_PASSED_CURRENT", "original_database.db")
+	###########
+	#calculating to see whether students that are trailing up to four courses have all credit hours courses below 21
+	print(value1)
+
+	value2 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_CURRENT", "original_database.db")
+	print(value2)
+
+	############
+	#calculating to see whether students that are trailing more than courses have all credit hours courses below 21
+
+	value3 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_CURRENT", "original_database.db")
+	print(value3)
+
+
+	##############
+	#calculating to see whether students that have CWA less than 45 have all credit hours courses below 21
+
+	value4 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_CURRENT", "original_database.db")
+	print(value4)
+
+
+
+	##################################################################################################
+	#PREVIOUS
+
+
+	############
+	#calculating to see whether students that passed have all their credit hours courses below 21
+
+	value5 = calculation_for_checking_credit_registered2FS_and_3FS_current("SELECT * FROM NUMBER_OF_STUDENTS_PASSED_PREVIOUS", "original_database.db")
+	print(value5)
+
+
+	############
+	#calculating to see whether students that are trailing up to four courses have all credit hours courses below 21
+
+	value6 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_PREVIOUS", "original_database.db")
+	print(value6)
+
+
+	###########
+	#calculating to see whether students that are trailing more than courses have all credit hours courses below 21
+
+	value7 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_PREVIOUS", "original_database.db")
+	print(value7)
+
+
+	###########
+	#calculating to see whether students that have CWA less than 45 have all credit hours courses below 21
+
+	value8 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_PREVIOUS", "original_database.db")
+	print(value8)
+
+	total_value1 = value1+value2+value3+value4+value5+value6+value7+value8
 
 
 
@@ -1548,44 +1468,657 @@ def auditing_function2_checking_credit_registered2FS():
 
 
 
-			
 
 
 
+###############################################################################################
+#main function
+def auditing_function2_checking_credit_registered3FS():
 	
-		
-		
+	##############################################################################################
+	#CURRENT
+
+
+
+
+	#########
+	#calculating to see whether students that passed have all their credit hours courses below 21
+	global total_value111
+
+	value11 = calculation_for_checking_credit_registered2FS_and_3FS_current("SELECT * FROM NUMBER_OF_STUDENTS_PASSED_CURRENT_TFS", "original_database2.db")
+
+
+	###########
+	#calculating to see whether students that are trailing up to four courses have all credit hours courses below 21
+
+	value22 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_CURRENT_TFS", "original_database2.db")
+
+
+	############
+	#calculating to see whether students that are trailing more than courses have all credit hours courses below 21
+
+	value33 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_CURRENT_TFS", "original_database2.db")
+
+
+	##############
+	#calculating to see whether students that have CWA less than 45 have all credit hours courses below 21
+
+	value44 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_CURRENT_TFS", "original_database2.db")
+
+
+
+	##################################################################################################
+	#PREVIOUS
+
+
+	############
+	#calculating to see whether students that passed have all their credit hours courses below 21
+
+	value111 = calculation_for_checking_credit_registered2FS_and_3FS_current("SELECT * FROM NUMBER_OF_STUDENTS_PASSED_PREVIOUS_TFS", "original_database2.db")
+
+
+	############
+	#calculating to see whether students that are trailing up to four courses have all credit hours courses below 21
+
+	value222 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_PREVIOUS_TFS", "original_database2.db")
+
+
+	###########
+	#calculating to see whether students that are trailing more than courses have all credit hours courses below 21
+
+	value333 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_PREVIOUS_TFS", "original_database2.db")
+
+
+	###########
+	#calculating to see whether students that have CWA less than 45 have all credit hours courses below 21
+
+	value444 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_PREVIOUS_TFS", "original_database2.db")
+
+
+	########################################################################################################
+	#SUPPLIMENTARY
+
+
+	############
+	#calculating to see whether students that passed have all their credit hours courses below 21
+
+	value1111 = calculation_for_checking_credit_registered2FS_and_3FS_current("SELECT * FROM NUMBER_OF_STUDENTS_PASSED_SUPPLEMENTARY_TFS", "original_database2.db")
+
+
+	############
+	#calculating to see whether students that are trailing up to four courses have all credit hours courses below 21
+
+	value2222 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_SUPPLEMENTARY_TFS", "original_database2.db")
+
+
+	###########
+	#calculating to see whether students that are trailing more than courses have all credit hours courses below 21
+
+	value3333 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_SUPPLEMENTARY_TFS", "original_database2.db")
+
+
+	###########
+	#calculating to see whether students that have CWA less than 45 have all credit hours courses below 21
+
+	value4444 = calculation_for_checking_credit_registered3FS_and_2FS_otherthancurrent("SELECT * FROM STUDENTS_WITH_CWA_LESS_THAN_45_SUPPLEMENTARY_TFS", "original_database2.db")
+
+	total_value111 = value11+value22+value33+value44+value111+value222+value333+value444+value1111+value2222+value3333+value4444
+
+
+
+
+def function_for_finding_those_trailied(query, database_name):
+	#for all sections of the two file system
+	try:
+		connection4 = sqlite3.connect(database_name)
+		c4 = connection4.cursor()
+
+		c4.execute(query)
+		idnumber = []
+		refined_idnumber = []
+
+		for i in c4.fetchall():
+			idnumber.append(i)
+		del idnumber[0]
+		del idnumber[0]
+		del idnumber[0]
+
+		for x in idnumber:
+			if x[2] != None:
+				refined_idnumber.append(x[2])
+			else:
+				continue
+	except:
+		refined_idnumber = []
+	return refined_idnumber
+
+
+
+
+def function_for_finding_those_trailied_current_3FS(query, database_name):
+	try:
+		connection5 = sqlite3.connect(database_name)
+		c5 = connection5.cursor()
+
+		c5.execute(query)
+		idnumber1 = []
+		refined_idnumber1 = []
+
+		for i in c5.fetchall():
+			idnumber1.append(i)
+		del idnumber1[0]
+		del idnumber1[0]
+
+		for x in idnumber1:
+			if x[2] != None:
+				refined_idnumber1.append(x[2])
+			else:
+				continue
+	except:
+		refined_idnumber = []
+	return refined_idnumber
 
 
 
 
 
 
+############################################################
+#main function
+def auditing_function3_2FS_checking_missing_trails():
+	####
+	#CURRENT
+	global refined_total22
+	global pidnumber
+
+	############################################################
+	#for number of students that are trailing up to four courses
+	refined_idnumber1 = function_for_finding_those_trailied("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_CURRENT", "original_database.db")
+
+
+	############################################################
+	#for number of students that are trailing more than four courses
+	refined_idnumber2 = function_for_finding_those_trailied("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_CURRENT", "original_database.db")
+
+	refined_total1 = refined_idnumber1 + refined_idnumber2
+
+
+	#####
+	#PREVIOUS
+
+	#########################################################
+	#for numbe of students that are trailing up to four courses previous
+
+	refined_idnumber3 = function_for_finding_those_trailied("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_PREVIOUS", "original_database.db")
+
+
+	#########################################################
+	#for number of students that are trialing more than four courses previous
+
+	refined_idnumber4 = function_for_finding_those_trailied("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_PREVIOUS","original_database.db")
+
+	refined_total2 = refined_idnumber3 + refined_idnumber4
+
+	refined_total22 = refined_total2 + refined_total1
+
+	#####
+	#list to be displayed
+
+	pidnumber = []
+
+
+	########
+	#comparing the two
+	for i in refined_total2:
+		if i in refined_total1:
+			continue
+		else:
+			pidnumber.append(i)
+	print(pidnumber)
+
+
+
+	#creating a docx file to display information on screen
+	doc = aw.Document()
+
+	#creating a document builder
+	builder = aw.DocumentBuilder(doc)
+
+	#creating a font for the file 
+	font = builder.font
+	font.size = 15
+	font.bold = True
+	font.name = "Times New Roman"
+
+	#adding information from analysis to file
+	builder.write(f"TOTAL NUMBER OF STUDENT FOR EVERY SECTION(RESULTS OF {options} {options1})")
+
+	#creating a table to insert values
+	table = builder.start_table()
+
+	#inserting a cell
+	builder.insert_cell()
+	table.auto_fit(aw.tables.AutoFitBehavior.AUTO_FIT_TO_CONTENTS)
+
+
+	#setting format and inserting and adding text
+	builder.cell_format.vertical_alignment = aw.tables.CellVerticalAlignment.CENTER
+	builder.write("SECTIONS")
+
+
+	#inserting another cell 
+
+	builder.insert_cell()
+	builder.write("TOTAL NUMBER OF STUDENTS FOR PREVIOUS SEMESTER")
+
+	#inserting another cell 
+
+	builder.insert_cell()
+	builder.write("TOTAL NUMBER OF STUDENTS FOR CURRENT SEMESTER")
+	
+	#inserting another cell 
+
+	builder.insert_cell()
+	builder.write("REMARKS")
+
+	#ending the row 
+	builder.end_row()
+
+	#inserting another cell
+	builder.insert_cell()
+
+	#formating current row 
+	builder.row_format.height = 100
+	builder.row_format.height_rule = aw.HeightRule.EXACTLY
+
+	#inserting into current cell
+
+	builder.write("Number of students that passed ")
+
+	#creating cell
+
+	builder.insert_cell()
+	builder.write(str(final_kounter1))
+
+	#creating cell
+
+	builder.insert_cell()
+	builder.write(str(final_kounter11))
+
+	builder.insert_cell()
+
+	#ending row 
+	builder.end_row()
+
+	#inserting another cell
+	builder.insert_cell()
+	builder.write("Number of students that are trailing up to four courses")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter2))
+
+	builder.insert_cell()
+	builder.write(str(final_kounter22))
+
+	builder.insert_cell()
+
+	builder.end_row()
+
+
+	builder.insert_cell()
+	builder.write("Number of students that are trailing more than four courses")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter3))
+
+	builder.insert_cell()
+	builder.write(str(final_kounter33))
+
+	builder.insert_cell()
+
+	builder.end_row()
+
+	builder.insert_cell()
+	builder.write("Number of students that have CWA less than 45")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter4))
+
+	builder.insert_cell()
+	builder.write(str(final_kounter44))
+
+	builder.insert_cell()
+
+	builder.end_row()
+
+	builder.insert_cell()
+	builder.write("Number of students that abandoned the course")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter5))
+
+	builder.insert_cell()
+	builder.write(str(final_kounter55))
+
+	builder.insert_cell()
+
+
+	builder.end_row()
+
+	builder.insert_cell()
+	builder.write("Total Number of students registered")
+
+	builder.insert_cell()
+	builder.write(str("NULL"))
+
+	builder.insert_cell()
+	builder.write(str("NULL"))
+
+	builder.insert_cell()
+	builder.write(str(variable))
+
+	builder.end_table()
 
 
 
 
 
+	builder1 = aw.DocumentBuilder(doc)
+
+	#creating a font for the file 
+	font = builder1.font
+	font.size = 15
+	font.bold = True
+	font.name = "Times New Roman"
 
 
 
 
+	table2 = builder1.start_table()
+
+	builder1.insert_cell()
+	table2.auto_fit(aw.tables.AutoFitBehavior.AUTO_FIT_TO_CONTENTS)
+
+
+	#setting format and inserting and adding text
+	builder1.cell_format.vertical_alignment = aw.tables.CellVerticalAlignment.CENTER
+	builder1.write("STUDENTS WITH MISSING TRAILS")
+
+
+	#inserting another cell 
+
+	builder1.insert_cell()
+	builder1.write("STUDENTS WITH CRED REG ABOVE 21")
+
+	builder1.end_row()
+
+	#inserting another cell
+
+
+	builder1.insert_cell()
+	for i in pidnumber:
+		builder1.writeln(str(i) + ",")
+
+
+	builder1.insert_cell()
+	for i in total_value1:
+		builder1.writeln("*" + str(i) + ",") 
+	builder1.end_row()
+
+	builder1.end_table()
 
 
 
 
+	doc.save(f"REPORT FOR {options} {options1} and {shadow_options1}.docx")
+	os.startfile(f"REPORT FOR {options} {options1} and {shadow_options1}.docx")
+
+
+def auditing_function3_3FS_checking_missing_trials():
+	global pidnumber1
+	global refined_total111
+
+	#####
+	#CURRENT
+	#for number of students that are trailing up to four courses
+
+	refined_idnumber11 = function_for_finding_those_trailied("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_CURRENT_TFS","originial_database2.db")
+
+	#################################
+	#for number of students that are trailing more than four courses
+
+	refined_idnumber22 = function_for_finding_those_trailied("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_CURRENT_TFS","originial_database2.db")
+
+
+	#################################
+	#PREVIOUS
+
+	#for number of students that are trailing up to four courses
+	refined_idnumber33 = function_for_finding_those_trailied("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_PREVIOUS_TFS","originial_database2.db")
+
+
+	#for number of students that are trailing more than four courses
+	refined_idnumber44 = function_for_finding_those_trailied("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_PREVIOUS_TFS","originial_database2.db")
+
+
+	refined_total11 = refined_idnumber33 + refined_idnumber44
+	#####################################
+	#SUPPLEMENTARY
+
+	#for number of students that are trailing current 
+
+	refined_idnumber55 = function_for_finding_those_trailied_current_3FS("SELECT * FROM NUMBER_OF_STUDENTS_PASSED_SUPPLEMENTARY_TFS","originial_database2.db")
+
+	#for number of students that are trailing up to four courses
+
+	refined_idnumber66 = function_for_finding_those_trailied_current_3FS("SELECT * FROM STUDENTS_TRAILING_UP_TO_FOUR_COURSES_SUPPLEMENTARY_TFS","originial_database2.db")
+
+	#for number of students that are trailing up to four courses
+	refined_idnumber77 = function_for_finding_those_trailied_current_3FS("SELECT * FROM STUDENTS_TRAILING_MORE_THAN_FOUR_COURSES_SUPPLEMENTARY_TFS","originial_database2.db")
+
+	refined_total111 = refined_idnumber11 + refined_idnumber22 + refined_idnumber66 + refined_idnumber77 + refined_idnumber55
+
+	pidnumber1 = []
+	#comparing the three
+	for i in refined_total11:
+		if i in refined_total111:
+			continue
+		else:
+			pidnumber1.append(i)
+
+	print(pidnumber1)
+
+	#creating a docx file to display information on screen
+	doc = aw.Document()
+
+	#creating a document builder
+	builder = aw.DocumentBuilder(doc)
+
+	#creating a font for the file 
+	font = builder.font
+	font.size = 15
+	font.bold = True
+	font.name = "Times New Roman"
+
+	#adding information from analysis to file
+	builder.write(f"TOTAL NUMBER OF STUDENT FOR EVERY SECTION(RESULTS OF {options} {options1})")
+
+	#creating a table to insert values
+	table = builder.start_table()
+
+	#inserting a cell
+	builder.insert_cell()
+	table.auto_fit(aw.tables.AutoFitBehavior.AUTO_FIT_TO_CONTENTS)
+
+
+	#setting format and inserting and adding text
+	builder.cell_format.vertical_alignment = aw.tables.CellVerticalAlignment.CENTER
+	builder.write("SECTIONS")
+
+
+	#inserting another cell 
+
+	builder.insert_cell()
+	builder.write("TOTAL NUMBER OF STUDENTS FOR PREVIOUS SEMESTER")
+
+	#inserting another cell 
+
+	builder.insert_cell()
+	builder.write("TOTAL NUMBER OF STUDENTS FOR CURRENT SEMESTER")
+	
+	#inserting another cell 
+
+	builder.insert_cell()
+	builder.write("REMARKS")
+
+	#ending the row 
+	builder.end_row()
+
+	#inserting another cell
+	builder.insert_cell()
+
+	#formating current row 
+	builder.row_format.height = 100
+	builder.row_format.height_rule = aw.HeightRule.EXACTLY
+
+	#inserting into current cell
+
+	builder.write("Number of students that passed ")
+
+	#creating cell
+
+	builder.insert_cell()
+	builder.write(str(final_kounter1TFS))
+
+	#creating cell
+
+	builder.insert_cell()
+	builder.write(str(final_kounter11TFS))
+
+	builder.insert_cell()
+
+	#ending row 
+	builder.end_row()
+
+	#inserting another cell
+	builder.insert_cell()
+	builder.write("Number of students that are trailing up to four courses")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter2TFS))
+
+	builder.insert_cell()
+	builder.write(str(final_kounter22TFS))
+
+	builder.insert_cell()
+	builder.end_row()
+
+
+	builder.insert_cell()
+	builder.write("Number of students that are trailing more than four courses")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter3TFS))
+
+	builder.insert_cell()
+	builder.write(str(final_kounter33TFS))
+
+	builder.insert_cell()
+
+	builder.end_row()
+
+	builder.insert_cell()
+	builder.write("Number of students that have CWA less than 45")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter4TFS))
+
+	builder.insert_cell()
+	builder.write(str(final_kounter44TFS))
+
+	builder.insert_cell()
+
+	builder.end_row()
+
+	builder.insert_cell()
+	builder.write("Number of students that abandoned the course")
+
+	builder.insert_cell()
+	builder.write(str(final_kounter5TFS))
+
+	builder.insert_cell()
+	builder.write(str(final_kounter55TFS))
+
+	builder.insert_cell()
+
+
+	builder.end_row()
+
+	builder.insert_cell()
+	builder.write("Total number of students registered")
+
+	builder.insert_cell()
+	builder.write(str("NULL"))
+
+	builder.insert_cell()
+	builder.write(str("NULL"))
+
+	builder.insert_cell()
+	builder.write(str(condition))
+
+
+	builder.end_table()
+
+
+
+	builder1 = aw.DocumentBuilder(doc)
+
+	#creating a font for the file 
+	font = builder1.font
+	font.size = 15
+	font.bold = True
+	font.name = "Times New Roman"
 
 
 
 
+	table2 = builder1.start_table()
+
+	builder1.insert_cell()
+	table2.auto_fit(aw.tables.AutoFitBehavior.AUTO_FIT_TO_CONTENTS)
+
+
+	#setting format and inserting and adding text
+	builder1.cell_format.vertical_alignment = aw.tables.CellVerticalAlignment.CENTER
+	builder1.write("STUDENTS WITH MISSING TRAILS")
+
+
+	#inserting another cell 
+
+	builder1.insert_cell()
+	builder1.write("STUDENTS WITH CRED REG ABOVE 21")
+
+	builder1.end_row()
+
+	#inserting another cell
+
+
+	builder1.insert_cell()
+	for i in pidnumber1:
+		builder1.writeln(str(i) + ",")
+
+
+	builder1.insert_cell()
+	for i in total_value111:
+		builder1.writeln("*" + str(i) + ",") 
+	builder1.end_row()
+
+	builder1.end_table()
 
 
 
-
-
-
-
-
+	doc.save(f"REPORT FOR {options} {options1} and {shadow_options1}.docx")
+	os.startfile(f"REPORT FOR {options} {options1} and {shadow_options1}.docx")
 
 
 
@@ -1840,16 +2373,6 @@ root_filename = ""
 root_filename1 = ""
 root_filename2 = ""
 back()
-
-
-
-
-
-
-
-
-
-
 
 
 
